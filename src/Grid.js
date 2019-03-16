@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Grid.css';
 
 export default class Grid extends React.Component {
     constructor(props) {
@@ -6,30 +7,56 @@ export default class Grid extends React.Component {
       this.state = {
         error: null,
         isLoaded: false,
-        items: []
+        items: [],
+        page: 1,
       };
+
+      this.incrementPagination = this.incrementPagination.bind(this);
+      this.decrementPagination = this.decrementPagination.bind(this);
+      this.fetchData = this.fetchData.bind(this);
+    }
+
+    fetchData() {
+      console.log(this.state.page);
+      fetch(`http://localhost:3004/data?_page=${this.state.page}`).then((res) => {
+        console.log(this.state.page);
+        return res;
+      })
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            items: result
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      ).then(() => {
+        console.log('done fetching');
+      })
+    }
+
+    incrementPagination() {
+      this.setState({page: this.state.page+1});
+      console.log('set state done');
+      this.fetchData();
+    }
+
+    decrementPagination() {
+      this.setState({page: this.state.page-1});
+      this.fetchData();
     }
   
     componentDidMount() {
-      fetch("http://localhost:3004/data")
-        .then(res => res.json())
-        .then(
-          (result) => {
-            this.setState({
-              isLoaded: true,
-              items: result
-            });
-          },
-          // Note: it's important to handle errors here
-          // instead of a catch() block so that we don't swallow
-          // exceptions from actual bugs in components.
-          (error) => {
-            this.setState({
-              isLoaded: true,
-              error
-            });
-          }
-        )
+      this.fetchData();
     }
   
     render() {
@@ -51,6 +78,12 @@ export default class Grid extends React.Component {
                 {Object.keys(item).map(key => (<td>{item[key]}</td>))}
               </tr>
             ))}
+            <tr>
+               <td>
+                 <input type="button" name="name" value="-" onClick={this.decrementPagination} />
+                 <input type="button" name="name" value="+" onClick={this.incrementPagination} />
+               </td>
+            </tr>
           </table>
         );
       }
