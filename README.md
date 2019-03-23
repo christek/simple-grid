@@ -1,3 +1,6 @@
 ## Running web server
 
-json-server --watch db.json --port 3004```````
+- add sorting click to headers
+- add editing
+
+json-server --watch db.json --port 3004

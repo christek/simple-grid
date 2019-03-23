@@ -10,17 +10,19 @@ export default class Grid extends React.Component {
       items: [],
       page: 1,
       totalCount: 0,
+      sortColum: this.props.sortCol,
+      order: "asc", 
     };
 
     this.incrementPagination = this.incrementPagination.bind(this);
     this.decrementPagination = this.decrementPagination.bind(this);
     this.changePagination = this.changePagination.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.sortHere = this.sortHere.bind(this);
   }
 
   fetchData() {
-    fetch(`http://localhost:3004/data?_page=${this.state.page}`).then((res) => {
-      console.log(res.headers.get( 'X-Total-Count' ));
+    fetch(`http://localhost:3004/data?_page=${this.state.page}&_limit=${this.props.pageSize}&_sort=${this.state.sortColum}&_order=${this.state.order}`).then((res) => {
       this.setState({
         totalCount: parseInt(res.headers.get( 'X-Total-Count' ))
       });
@@ -47,7 +49,7 @@ export default class Grid extends React.Component {
   }
 
   incrementPagination() {
-    if (this.state.page * 10 < (Math.ceil((this.state.totalCount+1)/10)*10)) {
+    if (this.state.page * this.props.pageSize < (Math.ceil((this.state.totalCount+1)/this.props.pageSize)*this.props.pageSize)) {
       this.setState({ page: this.state.page + 1 }, () => {
         this.fetchData();
       });
@@ -68,11 +70,18 @@ export default class Grid extends React.Component {
   }
 
   changePagination(event) {
-    if (!(parseInt(event.target.value) * 10 <= (Math.ceil((this.state.totalCount+1)/10)*10))) return;
+    if (!(parseInt(event.target.value) * this.props.pageSize <= (Math.ceil((this.state.totalCount+1)/this.props.pageSize)*this.props.pageSize))) return;
     if (event.target.value === '') return; 
     this.setState({ page: parseInt(event.target.value) }, () => {
       this.fetchData();
     });
+  }
+
+  sortHere(event) {
+    this.setState({ sortColum: event.target.value }, () => {
+      this.fetchData();
+    });
+    console.log(event.target.value); 
   }
 
   componentDidMount() {
@@ -91,7 +100,7 @@ export default class Grid extends React.Component {
           <tbody>
           <tr>
             {this.props.columnDefs.map(item => (
-              <th key={item.headerName}>{item.headerName}</th>
+              <th key={item.headerName}>{item.headerName}<input value={item.headerName} type="button" onClick={this.sortHere} /></th>
             ))}
           </tr>
           {items.map(item => (

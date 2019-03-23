@@ -25,7 +25,10 @@ class App extends Component {
           headerName: "Fax", field: "Fax"
         }, {
           headerName: "Website", field: "Website"
-        }]} />
+        }]}
+        pageSize={10}
+        sortCol={"id"}
+        />
       </div>
     );
   }
