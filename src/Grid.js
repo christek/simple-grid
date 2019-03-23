@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Grid.css';
+import { ColumnSorter } from './columnSorter';
 
 export default class Grid extends React.Component {
   constructor(props) {
@@ -19,6 +20,8 @@ export default class Grid extends React.Component {
     this.changePagination = this.changePagination.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.sortHere = this.sortHere.bind(this);
+    this.setAsc = this.setAsc.bind(this);
+    this.setDesc = this.setDesc.bind(this);
   }
 
   fetchData() {
@@ -78,10 +81,22 @@ export default class Grid extends React.Component {
   }
 
   sortHere(event) {
+    console.log(event.target.value);
     this.setState({ sortColum: event.target.value }, () => {
       this.fetchData();
     });
-    console.log(event.target.value); 
+  }
+
+  setAsc(xxx) {
+    this.setState({ order: "asc", sortColum: xxx }, () => {
+      this.fetchData();
+    });
+  }
+
+  setDesc(xxx) {
+    this.setState({ order: "desc", sortColum: xxx }, () => {
+      this.fetchData();
+    });
   }
 
   componentDidMount() {
@@ -100,7 +115,9 @@ export default class Grid extends React.Component {
           <tbody>
           <tr>
             {this.props.columnDefs.map(item => (
-              <th key={item.headerName}>{item.headerName}<input value={item.headerName} type="button" onClick={this.sortHere} /></th>
+              <th key={item.headerName}>{item.headerName}
+                <ColumnSorter name="a" value={item.headerName} onClickA={this.setAsc} onClickB={this.setDesc} sortClick={this.sortHere} />
+              </th>
             ))}
           </tr>
           {items.map(item => (

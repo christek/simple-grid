@@ -1,6 +1,6 @@
 ## Running web server
 
-- add sorting click to headers
 - add editing
+- add annotation instrad of binding
 
 json-server --watch db.json --port 3004
