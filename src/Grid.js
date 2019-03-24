@@ -14,17 +14,9 @@ export default class Grid extends React.Component {
       sortColum: this.props.sortCol,
       order: "asc", 
     };
-
-    this.incrementPagination = this.incrementPagination.bind(this);
-    this.decrementPagination = this.decrementPagination.bind(this);
-    this.changePagination = this.changePagination.bind(this);
-    this.fetchData = this.fetchData.bind(this);
-    this.sortHere = this.sortHere.bind(this);
-    this.setAsc = this.setAsc.bind(this);
-    this.setDesc = this.setDesc.bind(this);
   }
 
-  fetchData() {
+  fetchData = () => {
     fetch(`http://localhost:3004/data?_page=${this.state.page}&_limit=${this.props.pageSize}&_sort=${this.state.sortColum}&_order=${this.state.order}`).then((res) => {
       this.setState({
         totalCount: parseInt(res.headers.get( 'X-Total-Count' ))
@@ -51,7 +43,7 @@ export default class Grid extends React.Component {
       )
   }
 
-  incrementPagination() {
+  incrementPagination = () => {
     if (this.state.page * this.props.pageSize < (Math.ceil((this.state.totalCount+1)/this.props.pageSize)*this.props.pageSize)) {
       this.setState({ page: this.state.page + 1 }, () => {
         this.fetchData();
@@ -59,20 +51,15 @@ export default class Grid extends React.Component {
     }
   }
 
-  logKey(event) {
-    console.log(event.target.key); // combine this into one object
-    console.log(event.target.id);
-  }
-
-  decrementPagination() {
+  decrementPagination = () => {
     if (this.state.page > 1) {
       this.setState({ page: this.state.page - 1 }, () => {
         this.fetchData();
       });
     }
-  }
+  }  
 
-  changePagination(event) {
+  changePagination = (event) => {
     if (!(parseInt(event.target.value) * this.props.pageSize <= (Math.ceil((this.state.totalCount+1)/this.props.pageSize)*this.props.pageSize))) return;
     if (event.target.value === '') return; 
     this.setState({ page: parseInt(event.target.value) }, () => {
@@ -80,20 +67,19 @@ export default class Grid extends React.Component {
     });
   }
 
-  sortHere(event) {
-    console.log(event.target.value);
+  sortHere = (event) => {
     this.setState({ sortColum: event.target.value }, () => {
       this.fetchData();
     });
   }
 
-  setAsc(xxx) {
+  setAsc = (xxx) => {
     this.setState({ order: "asc", sortColum: xxx }, () => {
       this.fetchData();
     });
-  }
+  }  
 
-  setDesc(xxx) {
+  setDesc = (xxx) => {
     this.setState({ order: "desc", sortColum: xxx }, () => {
       this.fetchData();
     });
@@ -122,7 +108,7 @@ export default class Grid extends React.Component {
           </tr>
           {items.map(item => (
             <tr key={item.id}>
-              {Object.keys(item).map(key => (<td key={key} onClick={this.logKey} id={item.id}>{item[key]}</td>))}
+              {Object.keys(item).map(key => (<td key={key} id={item.id}>{item[key]}</td>))}
             </tr>
           ))}
           <tr>
