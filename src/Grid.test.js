@@ -12,6 +12,7 @@ import { shallow, mount, render } from 'enzyme';
 
 
 import Grid from './Grid';
+import ColumnSorter from './ColumnSorter';
 
 
 it('renders without crashing', () => {
@@ -46,5 +47,5 @@ test('desc', () => {
   sortCol={"id"}
   />);
 
-  expect(grid.find('th')).to.have.lengthOf(9);
+  expect(grid.find(ColumnSorter)).to.have.lengthOf(9);
 });
