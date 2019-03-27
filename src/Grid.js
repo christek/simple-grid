@@ -7,7 +7,7 @@ export default class Grid extends React.Component {
     super(props);
     this.state = {
       error: null,
-      isLoaded: false,
+      isLoaded: false || props.isLoaded,
       items: [],
       page: 1,
       totalCount: 0,
@@ -18,9 +18,13 @@ export default class Grid extends React.Component {
 
   fetchData = () => {
     fetch(`http://localhost:3004/data?_page=${this.state.page}&_limit=${this.props.pageSize}&_sort=${this.state.sortColum}&_order=${this.state.order}`).then((res) => {
+      console.log('res--');
+      console.log(JSON.stringify(res));
       this.setState({
         totalCount: parseInt(res.headers.get( 'X-Total-Count' ))
       });
+      'console.log(this.state);'
+      console.log(this.state);
       return res;
     })
       .then(res => res.json())
